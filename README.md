@@ -22,6 +22,14 @@ pip install easyquotation_enhance
 
 ### Usage
 
+###### Params
+
+- database_engine: sqlalchemy的create_engine对象
+- datatable: 存储数据的数据表
+- timeout: 单个并发线程超时时间，默认为9999
+- stock_num: 单个线程得到的股票数据量，sina默认为800，tencent默认为100
+
+
 ###### Sina
 
 ```python
