@@ -10,7 +10,7 @@ with open(path.join(this_directory, "README.md"), encoding="utf-8") as f:
 
 setup(
     name="easyquotation_enhance",
-    version="0.0.0.1",
+    version="0.0.0.2",
     description="A utility for Fetch China Stock Info",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -23,7 +23,6 @@ setup(
     classifiers=[
         "Development Status :: 4 - Beta",
         "Programming Language :: Python :: 3.5",
-        "License ::  MIT License",
     ],
     packages=["easyquotation_enhance"],
 )

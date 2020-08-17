@@ -5,6 +5,8 @@ import easyquotation
 from datetime import datetime
 from func_timeout import FunctionTimedOut, func_timeout
 from sqlalchemy import MetaData, Table, create_engine
+from . import helpers
+import json
 
 easyquotation.update_stock_codes()
 quotation = easyquotation.use('qq')
@@ -12,9 +14,16 @@ quotation = easyquotation.use('qq')
 
 class BaseDownload:
     """基础行情类"""
-    def __init__(self, database_engine: create_engine, datatable: str, timeout: float = 99999, is_log=True):
+
+    def __init__(self, database_engine: create_engine,
+                 datatable: str,
+                 timeout: float = 99999,
+                 stock_num: int = 800,
+                 is_log=True):
         self._session = requests.session()
-        self.stock_list = quotation.stock_list
+        self.max_num = stock_num
+        self.stock_codes = self.load_stock_codes()
+        self.stock_list = self.gen_stock_list(self.stock_codes)
         self.stock_api = None
         self.grep_stock_code = re.compile(r"(?<=_)\w+")
         self.database_engine = database_engine
@@ -34,6 +43,48 @@ class BaseDownload:
             ),
         }
 
+    @staticmethod
+    def load_stock_codes():
+        with open(helpers.STOCK_CODE_PATH) as f:
+            return json.load(f)["stock"]
+
+    def gen_stock_list(self, stock_codes):
+        stock_with_exchange_list = self._gen_stock_prefix(stock_codes)
+
+        if self.max_num > len(stock_with_exchange_list):
+            request_list = ",".join(stock_with_exchange_list)
+            return [request_list]
+
+        stock_list = []
+        for i in range(0, len(stock_codes), self.max_num):
+            request_list = ",".join(
+                stock_with_exchange_list[i: i + self.max_num]
+            )
+            stock_list.append(request_list)
+        return stock_list
+
+    @staticmethod
+    def get_stock_type(stock_code):
+        """判断股票ID对应的证券市场
+        匹配规则
+        ['50', '51', '60', '90', '110'] 为 sh
+        ['00', '13', '18', '15', '16', '18', '20', '30', '39', '115'] 为 sz
+        ['5', '6', '9'] 开头的为 sh， 其余为 sz
+        :param stock_code:股票ID, 若以 'sz', 'sh' 开头直接返回对应类型，否则使用内置规则判断
+        :return 'sh' or 'sz'"""
+        assert type(stock_code) is str, "stock code need str type"
+        sh_head = ("50", "51", "60", "90", "110", "113",
+                   "132", "204", "5", "6", "9", "7")
+        if stock_code.startswith(("sh", "sz", "zz")):
+            return stock_code[:2]
+        else:
+            return "sh" if stock_code.startswith(sh_head) else "sz"
+
+    def _gen_stock_prefix(self, stock_codes):
+        return [
+            self.get_stock_type(code) + code[-6:] for code in stock_codes
+        ]
+
     @property
     def table_create(self) -> Table:
         return Table()
@@ -44,6 +95,9 @@ class BaseDownload:
         end_time = datetime.now()
         if self.is_log:
             print("localtime:%s  time:%s" % (end_time, end_time - start_time))
+
+    def market_snapshot(self):
+        return self.get_stock_data()
 
     def format_response_data(self, rep_data):
         """

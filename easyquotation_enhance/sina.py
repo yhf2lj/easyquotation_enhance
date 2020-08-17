@@ -10,7 +10,6 @@ import time
 class SinaQuotation(BaseDownload):
     """新浪免费行情获取"""
 
-    max_num = 800
     grep_detail = re.compile(
         r"(\d+)=[^\s]([^\s,]+?)%s%s"
         % (r",([\.\d]+)" * 29, r",([-\.\d:]+)" * 2)
@@ -23,13 +22,14 @@ class SinaQuotation(BaseDownload):
         r"(\w{2}\d+)=\"\";"
     )
 
-    def __init__(self, database_engine: create_engine, datatable: str, timeout: float):
+    def __init__(self, database_engine: create_engine, datatable: str, timeout: float, stock_num: int = 800):
         """
         :param database_engine: sqlalchemy的create_engine对象
         :param datatable: 存储数据的数据表
-        :param timeout: 单个并发线程超时时间，注：共约108个线程
+        :param timeout: 单个并发线程超时时间
+        :param stock_num: 单个线程得到的股票数据量
         """
-        super().__init__(database_engine, datatable, timeout)
+        super().__init__(database_engine, datatable, timeout, stock_num)
         self.datatable = datatable
         self.stock_api = f"http://hq.sinajs.cn/rn={int(time.time() * 1000)}&list="
 
