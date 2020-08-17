@@ -8,13 +8,9 @@ if __name__ == '__main__':
                              datatable='stock_qq',
                              timeout=1,
                              stock_num=400)
-    """一直运行到15：06"""
-    stop_time = int(datetime.strptime(datetime.now().strftime("%Y-%m-%d"), "%Y-%m-%d").timestamp()) + 3600 * 15.1
-    """未开盘时间请改变条件"""
-    while datetime.now().timestamp() > stop_time:
+
+    while True:
         try:
             dl_qq.downloadnow()
         except Exception as ee:
             print(ee)
-
-        # break
