@@ -3,13 +3,31 @@ import json
 import os
 import re
 import requests
+from datetime import datetime
 
 STOCK_CODE_PATH = os.path.join(os.path.dirname(__file__), "stock_codes.conf")
+
+current_day = datetime.now().strftime("%Y-%m-%d")
+trd_hour_start_morning = int(datetime.strptime(current_day + ' ' + '09:05:00', '%Y-%m-%d %H:%M:%S').timestamp())
+trd_hour_end_morning = int(datetime.strptime(current_day + ' ' + '11:34:00', '%Y-%m-%d %H:%M:%S').timestamp())
+trd_hour_start_afternoon = int(datetime.strptime(current_day + ' ' + '12:55:00', '%Y-%m-%d %H:%M:%S').timestamp())
+trd_hour_end_afternoon = int(datetime.strptime(current_day + ' ' + '15:06:00', '%Y-%m-%d %H:%M:%S').timestamp())
+
+
+def stock_a_hour(current_time):
+    """A股时间段判断
+    :param current_time:当前时间的时间戳，eg：time.time() 或者 datetime.now().timestamp()
+    """
+    return (trd_hour_start_morning <= current_time <= trd_hour_end_morning) or (
+            trd_hour_start_afternoon <= current_time <= trd_hour_end_afternoon)
 
 
 def update_stock_codes():
     """获取所有股票 ID 到 all_stock_code 目录下"""
-    response = requests.get("http://www.shdjt.com/js/lib/astock.js")
+    try:
+        response = requests.get("http://www.shdjt.com/js/lib/astock.js")
+    except Exception as e:
+        raise Exception("更新股票代码失败")
     stock_codes = re.findall(r"~([a-z0-9]*)`", response.text)
     with open(STOCK_CODE_PATH, "w") as f:
         f.write(json.dumps(dict(stock=stock_codes)))
