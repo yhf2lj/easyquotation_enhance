@@ -1,13 +1,14 @@
 from sqlalchemy import create_engine
-from datetime import datetime
+from datetime import datetime, time
 from easyquotation_enhance import TencentQuotation, stock_a_hour
-import time
+from time import sleep
+import sys
 
 if __name__ == '__main__':
-    sqlite_loc = "%s-test.db" % datetime.now().strftime("%Y-%m-%d")
+    sqlite_loc = "%s-qq.db" % datetime.now().strftime("%Y-%m-%d")
     dl_qq = TencentQuotation(database_engine=create_engine("sqlite:///%s" % sqlite_loc),
                              datatable='stock_qq',
-                             timeout=1,
+                             timeout=0.8,
                              stock_num=400)
 
     while True:
@@ -16,6 +17,8 @@ if __name__ == '__main__':
                 dl_qq.downloadnow()
             except Exception as ee:
                 print(ee)
+        elif datetime.now().time() > time(15, 7):
+            sys.exit(0)
         else:
-            print("relax 10s")
-            time.sleep(10)
+            print("relax 10s , localtime: %s" % datetime.now())
+            sleep(10)
