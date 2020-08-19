@@ -70,12 +70,11 @@ class SinaQuotation(BaseDownload):
                      Column("ask5_volume", Integer()),
                      )
 
-    def format_response_data(self, rep_data, prefix=False):
+    def format_response_data(self, rep_data):
         stocks_detail = "".join(rep_data)
         stocks_detail = self.del_null_data_stock.sub('', stocks_detail)
         stocks_detail = stocks_detail.replace(' ', '')
-        grep_str = self.grep_detail_with_prefix if prefix else self.grep_detail
-        result = grep_str.finditer(stocks_detail)
+        result = self.grep_detail_with_prefix.finditer(stocks_detail)
         stock_list = list()
         for stock_match_object in result:
             stock = stock_match_object.groups()

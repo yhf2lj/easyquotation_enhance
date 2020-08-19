@@ -8,10 +8,10 @@ from datetime import datetime
 STOCK_CODE_PATH = os.path.join(os.path.dirname(__file__), "stock_codes.conf")
 
 current_day = datetime.now().strftime("%Y-%m-%d")
-trd_hour_start_morning = int(datetime.strptime(current_day + ' ' + '09:05:00', '%Y-%m-%d %H:%M:%S').timestamp())
-trd_hour_end_morning = int(datetime.strptime(current_day + ' ' + '11:34:00', '%Y-%m-%d %H:%M:%S').timestamp())
-trd_hour_start_afternoon = int(datetime.strptime(current_day + ' ' + '12:55:00', '%Y-%m-%d %H:%M:%S').timestamp())
-trd_hour_end_afternoon = int(datetime.strptime(current_day + ' ' + '15:06:00', '%Y-%m-%d %H:%M:%S').timestamp())
+trd_hour_start_morning = int(datetime.strptime(current_day + ' ' + '09:08:00', '%Y-%m-%d %H:%M:%S').timestamp())
+trd_hour_end_morning = int(datetime.strptime(current_day + ' ' + '11:32:00', '%Y-%m-%d %H:%M:%S').timestamp())
+trd_hour_start_afternoon = int(datetime.strptime(current_day + ' ' + '12:58:00', '%Y-%m-%d %H:%M:%S').timestamp())
+trd_hour_end_afternoon = int(datetime.strptime(current_day + ' ' + '15:02:00', '%Y-%m-%d %H:%M:%S').timestamp())
 
 
 def stock_a_hour(current_time):
