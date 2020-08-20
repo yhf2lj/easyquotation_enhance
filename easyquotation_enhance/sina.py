@@ -22,14 +22,20 @@ class SinaQuotation(BaseDownload):
         r"(\w{2}\d+)=\"\";"
     )
 
-    def __init__(self, database_engine: create_engine, datatable: str, timeout: float, stock_num: int = 800):
+    def __init__(self,
+                 timeout: float = 9999,
+                 stock_num: int = 800,
+                 database_engine: create_engine = None,
+                 datatable: str = None,
+                 is_log=True):
         """
         :param database_engine: sqlalchemy的create_engine对象
         :param datatable: 存储数据的数据表
         :param timeout: 单个并发线程超时时间
         :param stock_num: 单个线程得到的股票数据量
+        :param is_log: 是否在命令行打印单次循环时间信息
         """
-        super().__init__(database_engine, datatable, timeout, stock_num)
+        super().__init__(database_engine, datatable, timeout, stock_num, is_log)
         self.datatable = datatable
         self.stock_api = f"http://hq.sinajs.cn/rn={int(time.time() * 1000)}&list="
 

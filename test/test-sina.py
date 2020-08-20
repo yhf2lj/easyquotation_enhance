@@ -9,7 +9,8 @@ if __name__ == '__main__':
     dl_sina = SinaQuotation(database_engine=create_engine("sqlite:///%s" % sqlite_loc),
                             datatable='stock_sina',
                             timeout=0.8,
-                            stock_num=800)
+                            stock_num=800,
+                            is_log=False)
 
     while True:
         if stock_a_hour(datetime.now().timestamp()):

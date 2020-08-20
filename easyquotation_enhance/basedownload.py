@@ -26,15 +26,16 @@ class BaseDownload:
         self.stock_codes = self.load_stock_codes()
         self.stock_list = self.gen_stock_list(self.stock_codes)
         self.stock_api = None
-        self.grep_stock_code = re.compile(r"(?<=_)\w+")
-        self.database_engine = database_engine
-        self.datatable = datatable
-        self.table = self.table_create
-        self.table.create(self.database_engine, checkfirst=True)
-        self.stock_insert = Table(self.datatable, MetaData(self.database_engine),
-                                  autoload=True).insert().prefix_with("OR IGNORE")
         self.timeout = timeout
-        self.is_log = is_log
+        self.grep_stock_code = re.compile(r"(?<=_)\w+")
+        if database_engine and datatable:
+            self.database_engine = database_engine
+            self.datatable = datatable
+            self.table = self.table_create
+            self.table.create(self.database_engine, checkfirst=True)
+            self.stock_insert = Table(self.datatable, MetaData(self.database_engine),
+                                      autoload=True).insert().prefix_with("OR IGNORE")
+            self.is_log = is_log
         self.headers = {
             "Accept-Encoding": "gzip, deflate, sdch",
             "User-Agent": (
@@ -46,10 +47,12 @@ class BaseDownload:
 
     @staticmethod
     def load_stock_codes():
+        """加载股票数据"""
         with open(helpers.STOCK_CODE_PATH) as f:
             return json.load(f)["stock"]
 
     def gen_stock_list(self, stock_codes):
+        """获取股票分割清单"""
         stock_with_exchange_list = self._gen_stock_prefix(stock_codes)
 
         if self.max_num > len(stock_with_exchange_list):
@@ -91,13 +94,19 @@ class BaseDownload:
         return Table()
 
     def downloadnow(self):
-        start_time = datetime.now()
-        self.stock_insert.execute(self.get_stock_data())
-        end_time = datetime.now()
+        """下载股票数据至数据库，需要database_engine不为空"""
+        if self.database_engine is None:
+            raise Exception("仅获取股票数据请使用market_snapshot方法")
         if self.is_log:
+            start_time = datetime.now()
+            self.stock_insert.execute(self.get_stock_data())
+            end_time = datetime.now()
             print("localtime:%s  time:%s" % (end_time, end_time - start_time))
+        else:
+            self.stock_insert.execute(self.get_stock_data())
 
     def market_snapshot(self):
+        """获取市场截面数据"""
         return self.get_stock_data()
 
     def format_response_data(self, rep_data):
@@ -116,7 +125,7 @@ class BaseDownload:
             r = func_timeout(self.timeout, self.get_stock_batch, args=(params,))
             return r.text
         except FunctionTimedOut:
-            print("batch timeout")
+            print("batch timeout,localtime:%s" % datetime.now())
         except Exception as e:
             print("something wrong,tell author please\n", e)
 

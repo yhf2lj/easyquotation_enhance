@@ -6,14 +6,20 @@ from datetime import datetime
 
 
 class TencentQuotation(BaseDownload):
-    def __init__(self, database_engine: create_engine, datatable: str, timeout: float, stock_num: int = 100):
+    def __init__(self,
+                 stock_num: int = 100,
+                 timeout: float = 9999,
+                 database_engine: create_engine = None,
+                 datatable: str = None,
+                 is_log=True):
         """
         :param database_engine: sqlalchemy的create_engine对象
         :param datatable: 存储数据的数据表
         :param timeout: 单个并发线程超时时间，默认为9999
         :param stock_num: 单个线程得到的股票数据量，默认100
+        :param is_log: 是否在命令行打印单次循环时间信息
         """
-        super().__init__(database_engine, datatable, timeout, stock_num)
+        super().__init__(database_engine, datatable, timeout, stock_num, is_log)
         self.datatable = datatable
         self.stock_api = "http://qt.gtimg.cn/q="
 
