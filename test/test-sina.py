@@ -10,7 +10,8 @@ if __name__ == '__main__':
                             datatable='stock_sina',
                             timeout=0.8,
                             stock_num=800,
-                            is_log=False)
+                            is_log=True,
+                            thread=True)
 
     while True:
         if stock_a_hour(datetime.now().timestamp()):

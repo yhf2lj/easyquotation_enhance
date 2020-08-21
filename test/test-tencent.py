@@ -9,7 +9,9 @@ if __name__ == '__main__':
     dl_qq = TencentQuotation(database_engine=create_engine("sqlite:///%s" % sqlite_loc),
                              datatable='stock_qq',
                              timeout=0.8,
-                             stock_num=400)
+                             stock_num=400,
+                             is_log=True,
+                             thread=True)
 
     while True:
         if stock_a_hour(datetime.now().timestamp()):

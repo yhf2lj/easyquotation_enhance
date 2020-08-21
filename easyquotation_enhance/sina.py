@@ -27,7 +27,8 @@ class SinaQuotation(BaseDownload):
                  stock_num: int = 800,
                  database_engine: create_engine = None,
                  datatable: str = None,
-                 is_log=True):
+                 is_log=True,
+                 thread=True):
         """
         :param database_engine: sqlalchemy的create_engine对象
         :param datatable: 存储数据的数据表
@@ -35,7 +36,7 @@ class SinaQuotation(BaseDownload):
         :param stock_num: 单个线程得到的股票数据量
         :param is_log: 是否在命令行打印单次循环时间信息
         """
-        super().__init__(database_engine, datatable, timeout, stock_num, is_log)
+        super().__init__(database_engine, datatable, timeout, stock_num, is_log, thread)
         self.datatable = datatable
         self.stock_api = f"http://hq.sinajs.cn/rn={int(time.time() * 1000)}&list="
 

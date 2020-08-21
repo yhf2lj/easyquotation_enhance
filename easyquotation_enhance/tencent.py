@@ -11,7 +11,8 @@ class TencentQuotation(BaseDownload):
                  timeout: float = 9999,
                  database_engine: create_engine = None,
                  datatable: str = None,
-                 is_log=True):
+                 is_log=True,
+                 thread=True):
         """
         :param database_engine: sqlalchemy的create_engine对象
         :param datatable: 存储数据的数据表
@@ -19,7 +20,7 @@ class TencentQuotation(BaseDownload):
         :param stock_num: 单个线程得到的股票数据量，默认100
         :param is_log: 是否在命令行打印单次循环时间信息
         """
-        super().__init__(database_engine, datatable, timeout, stock_num, is_log)
+        super().__init__(database_engine, datatable, timeout, stock_num, is_log, thread)
         self.datatable = datatable
         self.stock_api = "http://qt.gtimg.cn/q="
 

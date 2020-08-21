@@ -19,7 +19,8 @@ class BaseDownload:
                  datatable: str,
                  timeout: float = 99999,
                  stock_num: int = 800,
-                 is_log=True):
+                 is_log=True,
+                 thread=True):
         helpers.update_stock_codes()
         self._session = requests.session()
         self.max_num = stock_num
@@ -28,6 +29,7 @@ class BaseDownload:
         self.stock_api = None
         self.timeout = timeout
         self.grep_stock_code = re.compile(r"(?<=_)\w+")
+        self.if_thread = thread
         if database_engine and datatable:
             self.database_engine = database_engine
             self.datatable = datatable
@@ -95,8 +97,8 @@ class BaseDownload:
 
     def downloadnow(self):
         """下载股票数据至数据库，需要database_engine不为空"""
-        if self.database_engine is None:
-            raise Exception("仅获取股票数据请使用market_snapshot方法")
+        # if self.database_engine is None:
+        #     raise Exception("仅获取股票数据请使用market_snapshot方法")
         if self.is_log:
             start_time = datetime.now()
             self.stock_insert.execute(self.get_stock_data())
@@ -132,11 +134,16 @@ class BaseDownload:
     def _fetch_stock_data(self, stock_list):
         """获取股票信息"""
         pool = ThreadPool(len(stock_list))
-        try:
-            res = pool.map(self.get_stocks_by_range, stock_list)
-        finally:
-            pool.close()
-        return [d for d in res if d is not None]
+        if self.if_thread:
+            try:
+                res = pool.map(self.get_stocks_by_range, stock_list)
+            finally:
+                pool.close()
+            for stock_i in stock_list:
+                self.get_stocks_by_range(stock_i)
+            return [d for d in res if d is not None]
+        else:
+            return [self.get_stocks_by_range(param) for param in stock_list]
 
     def get_stock_data(self):
         """获取并格式化股票信息"""
