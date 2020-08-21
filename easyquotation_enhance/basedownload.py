@@ -128,8 +128,10 @@ class BaseDownload:
             return r.text
         except FunctionTimedOut:
             print("batch timeout,localtime:%s" % datetime.now())
+            return ''
         except Exception as e:
             print("something wrong,tell author please\n", e)
+            return ''
 
     def _fetch_stock_data(self, stock_list):
         """获取股票信息"""
@@ -139,8 +141,6 @@ class BaseDownload:
                 res = pool.map(self.get_stocks_by_range, stock_list)
             finally:
                 pool.close()
-            for stock_i in stock_list:
-                self.get_stocks_by_range(stock_i)
             return [d for d in res if d is not None]
         else:
             return [self.get_stocks_by_range(param) for param in stock_list]

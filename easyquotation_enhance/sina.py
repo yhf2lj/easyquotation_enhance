@@ -23,12 +23,12 @@ class SinaQuotation(BaseDownload):
     )
 
     def __init__(self,
-                 timeout: float = 9999,
                  stock_num: int = 800,
+                 timeout: float = 9999,
                  database_engine: create_engine = None,
                  datatable: str = None,
-                 is_log=True,
-                 thread=True):
+                 is_log: bool = True,
+                 thread: bool = True):
         """
         :param database_engine: sqlalchemy的create_engine对象
         :param datatable: 存储数据的数据表
