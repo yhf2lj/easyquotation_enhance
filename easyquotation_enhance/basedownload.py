@@ -135,8 +135,8 @@ class BaseDownload:
 
     def _fetch_stock_data(self, stock_list):
         """获取股票信息"""
-        pool = ThreadPool(len(stock_list))
         if self.if_thread:
+            pool = ThreadPool(len(stock_list))
             try:
                 res = pool.map(self.get_stocks_by_range, stock_list)
             finally:
