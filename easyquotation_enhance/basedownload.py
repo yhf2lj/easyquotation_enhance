@@ -149,3 +149,10 @@ class BaseDownload:
         """获取并格式化股票信息"""
         res = self._fetch_stock_data(self.stock_list)
         return self.format_response_data(res)
+
+    def get_real(self, stock_list: list):
+        """获取单个的股票结果，传入list"""
+        if len(stock_list) > 400:
+            raise Exception("单次限制400个股票")
+        res = [self.get_stock_batch(",".join(stock_list)).text]
+        return self.format_response_data(res)

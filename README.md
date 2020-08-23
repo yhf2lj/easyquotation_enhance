@@ -27,8 +27,9 @@ pip install easyquotation_enhance
 - database_engine: sqlalchemy的create_engine对象
 - datatable: 存储数据的数据表
 - timeout: 单个并发线程超时时间，默认为9999
-- stock_num: 单个线程得到的股票数据量，sina默认为800，tencent默认为100
-
+- stock_num: 单个线程得到的股票数据量，sina默认为800，tencent默认为400
+- is_log: 是否打印单个循环的时间日志，默认为True
+- thread: 是否使用多线程，默认为True
 
 ###### Sina
 
@@ -89,8 +90,19 @@ if __name__ == '__main__':
             sleep(10)
 
 ```
+###### 获取单个或多个股票数据
+```python
+from easyquotation_enhance import SinaQuotation
+
+dl_sina = SinaQuotation()
+print(dl_sina.get_real(['sh515700', 'sz000001']))
+```
 
 ###### 仅获取数据
+```python
+from easyquotation_enhance import SinaQuotation
 
-​	请使用easyquotation
+dl_sina = SinaQuotation()
+print(dl_sina.market_snapshot()[:5])
+```
 

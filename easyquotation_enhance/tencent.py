@@ -17,7 +17,7 @@ class TencentQuotation(BaseDownload):
         :param database_engine: sqlalchemy的create_engine对象
         :param datatable: 存储数据的数据表
         :param timeout: 单个并发线程超时时间，默认为9999
-        :param stock_num: 单个线程得到的股票数据量，默认100
+        :param stock_num: 单个线程得到的股票数据量，默认400
         :param is_log: 是否在命令行打印单次循环时间信息
         """
         super().__init__(database_engine, datatable, timeout, stock_num, is_log, thread)

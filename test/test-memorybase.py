@@ -1,8 +1,5 @@
 from sqlalchemy import create_engine
-from datetime import datetime, time
-from easyquotation_enhance import SinaQuotation, stock_a_hour, TencentQuotation, update_stock_codes
-from time import sleep
-import sys
+from easyquotation_enhance import SinaQuotation, update_stock_codes
 
 if __name__ == '__main__':
     update_stock_codes()
