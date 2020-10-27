@@ -101,9 +101,12 @@ class BaseDownload:
         #     raise Exception("仅获取股票数据请使用market_snapshot方法")
         if self.is_log:
             start_time = datetime.now()
-            self.stock_insert.execute(self.get_stock_data())
+            stockdata = self.get_stock_data()
+            midtime = datetime.now()
+            self.stock_insert.execute(stockdata)
             end_time = datetime.now()
-            print("localtime:%s  time:%s" % (end_time, end_time - start_time))
+            print("localtime:%s  time:%s  getdatatime:%s  tosqltime:%s" % (
+                end_time, end_time - start_time, midtime - start_time, end_time - midtime))
         else:
             self.stock_insert.execute(self.get_stock_data())
 
@@ -117,7 +120,7 @@ class BaseDownload:
         :param rep_data: 取得的数据
         :return: 格式化好的数据库
         """
-        pass
+        return list()
 
     def get_stock_batch(self, params):
         return self._session.get(self.stock_api + params, headers=self.headers)

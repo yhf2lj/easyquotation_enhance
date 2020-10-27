@@ -85,6 +85,8 @@ class SinaQuotation(BaseDownload):
         stock_list = list()
         for stock_match_object in result:
             stock = stock_match_object.groups()
+            if len(stock[32].strip()) <= 6:
+                continue
             stock_list.append(dict(
                 code=stock[0],
                 name=stock[1],
