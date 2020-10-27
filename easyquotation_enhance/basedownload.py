@@ -20,12 +20,15 @@ class BaseDownload:
                  timeout: float = 99999,
                  stock_num: int = 800,
                  is_log=True,
-                 thread=True):
+                 thread=True,
+                 stocklist=None):
         helpers.update_stock_codes()
         self._session = requests.session()
         self.max_num = stock_num
-        self.stock_codes = self.load_stock_codes()
-        self.stock_list = self.gen_stock_list(self.stock_codes)
+        if stocklist:
+            self.stock_list = stocklist
+        else:
+            self.stock_list = self.gen_stock_list(self.load_stock_codes())
         self.stock_api = None
         self.timeout = timeout
         self.grep_stock_code = re.compile(r"(?<=_)\w+")
