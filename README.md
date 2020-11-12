@@ -108,5 +108,4 @@ print(dl_sina.market_snapshot()[:5])
 ```
 
 ## Thanks
-
-[![PyCharm](https://i.loli.net/2020/11/12/xz1UQq5kmWinCbl.png)](https://www.jetbrains.com/?from=yhf2lj)
+[![PyCharm](https://i.loli.net/2020/11/12/bl5cigkJTjEONnM.png)](https://www.jetbrains.com/?from=yhf2lj)
