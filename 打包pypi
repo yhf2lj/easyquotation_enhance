@@ -1,0 +1,6 @@
+编译whl：
+python setup.py bdist_wheel
+上传包到pypi
+twine upload dist/*
+清除文件
+python setup.py clean
